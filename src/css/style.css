@@ -54,9 +54,9 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 
-/* Never allow sideways scrolling on any screen — catches anything that
-   pokes past the edge (e.g. the header art on narrow phones). */
-html, body { overflow-x: hidden; max-width: 100%; }
+/* Stop any sideways scroll on narrow screens. The guard is the catch-all;
+   the mobile rules further down make wide elements actually fit. */
+html, body { overflow-x: clip; }
 
 body {
   margin: 0;
