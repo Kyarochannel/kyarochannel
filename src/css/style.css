@@ -90,94 +90,108 @@ a:hover, a:focus { color: var(--gold-hover); }
 /* ----------------------------------------------------------------------
    LAYOUT
    ---------------------------------------------------------------------- */
+/* ======================================================================
+   LAYOUT — fluid by design. One system that scales from phone to TV.
+   No fixed pixel widths on anything structural; the sidebar column is
+   sized with a flexible track that collapses to a single column when
+   there isn't room for it. min-width:0 everywhere lets children shrink.
+   ====================================================================== */
 .layout {
+  width: 100%;
   max-width: 1060px;
   margin: 0 auto;
   display: grid;
-  gap: 26px;
-  grid-template-columns: 236px 1fr;
+  gap: clamp(16px, 3vw, 26px);
+  /* sidebar track is flexible (min 190px, ideal 15rem, never forced wider);
+     'main' takes the rest. On narrow screens the whole thing becomes one
+     column via the media query below. */
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
   grid-template-areas:
     "header  header"
+    "menu    menu"
     "sidebar main"
     "footer  footer";
 }
 .site-header { grid-area: header; }
+.menu-toggle { grid-area: menu; }
 .sidebar     { grid-area: sidebar; }
 main         { grid-area: main; }
 .site-footer { grid-area: footer; }
 
-/* Grid children default to min-width:auto, which lets wide content (the
-   header art, long lines) push a column wider than the screen. Allowing
-   them to shrink to 0 is what makes the whole layout actually fit mobile. */
-.site-header, .sidebar, main, .site-footer { min-width: 0; }
-.layout > * { min-width: 0; max-width: 100%; }
+/* The single most important rule for responsive grids/flex:
+   children may shrink below their content's natural width. Without this,
+   one wide child (an image, a long word) drags a whole column off-screen. */
+.layout > * { min-width: 0; }
+/* Make images fluid by default — but NOT the header portrait, which sets
+   its own height (this rule was overriding it and blowing her up). */
+.layout img:not(.header-pfp) { max-width: 100%; height: auto; }
 
 /* ----------------------------------------------------------------------
-   HEADER — Kyaro at real scale, BREAKING the banner's edges
+   HEADER — Kyaro in the banner, scaled fluidly so she fits any width.
+   Her size is tied to the viewport (clamp), and the text gap next to her
+   is a flexible fl:1 column, not a fixed 300px pad — so nothing overflows.
    ---------------------------------------------------------------------- */
 .site-header {
   position: relative;
-  /* extra top room so Kyaro can rise above the banner without being clipped */
-  margin-top: 56px;
   border: 2px solid var(--line);
   border-radius: 5px;
   box-shadow: 6px 6px 0 0 var(--shadow);
   background: var(--panel);
-  overflow: visible;
 }
 
 .header-art {
   position: relative;
   display: flex;
   align-items: flex-end;
-  gap: 4px;
-  min-height: 180px;
-  padding: 0 32px;
+  gap: clamp(8px, 2vw, 18px);
+  padding: 0 clamp(16px, 3vw, 32px);
   background: linear-gradient(120deg, var(--banner) 0%, var(--banner-2) 100%);
   border-radius: 3px 3px 0 0;
-  /* clip ONLY the banner's own background texture, not Kyaro (she's a sibling layer) */
+  overflow: hidden;            /* banner clips its own art; keeps header tidy */
 }
 
 .header-art::before {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 3px 3px 0 0;
-  /* faint vertical stripes in the banner, periwinkle-style texture */
   background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0 2px, transparent 2px 24px);
   pointer-events: none;
 }
 
-/* Kyaro lives in the header (not clipped) and is absolutely placed so her
-   hair rises ABOVE the banner's top edge and her shoulders meet its base. */
+/* Kyaro: sits in the banner, her height scales with the viewport so she's
+   big on desktop and proportionate on a phone. In normal flow (not absolute),
+   so she can never push the layout wider than the screen. */
 .header-pfp {
-  position: absolute;
-  left: 28px;
-  bottom: 0;                  /* shoulders sit at the banner's bottom edge */
-  z-index: 3;
-  height: 300px;             /* BIG — she dominates the left and overflows up */
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  /* Fixed, sensible size on normal screens; only shrinks on small phones.
+     Uses min() of a rem cap and a share of the viewport so she never grows
+     huge on wide screens nor overflows on tiny ones. */
+  height: min(220px, 40vw);
   width: auto;
+  align-self: flex-end;
+  margin-bottom: 0;
   filter: drop-shadow(3px 3px 0 rgba(63,108,51,0.25));
   pointer-events: none;
 }
 
 .header-words {
   position: relative;
-  z-index: 2;
-  flex: 1;
-  /* leave room on the left for Kyaro */
-  padding: 0 0 28px 300px;
+  z-index: 1;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: clamp(12px, 2vw, 20px) 0 clamp(16px, 2.5vw, 28px);
 }
 
 .site-title {
   font-family: 'Quicksand', sans-serif;
-  font-size: 3em;
+  font-size: clamp(1.6rem, 5vw, 3rem);   /* scales with the screen */
   font-weight: 700;
   color: var(--forest);
   margin: 0;
-  line-height: 1;
+  line-height: 1.05;
   letter-spacing: 0.01em;
-  /* clean, crisp type — just the faintest lift off the banner, no fake outline */
   text-shadow: 0 1px 2px rgba(40, 60, 35, 0.18);
 }
 .site-title a { color: inherit; text-decoration: none; }
@@ -404,19 +418,24 @@ main { display: flex; flex-direction: column; gap: 26px; }
 /* ----------------------------------------------------------------------
    MOBILE
    ---------------------------------------------------------------------- */
+/* ======================================================================
+   ONE responsive breakpoint: below 760px, collapse to a single column.
+   Everything else scales fluidly via clamp(), so this is the only place
+   the structure changes shape. The header/title need no overrides here —
+   their clamp() sizing already fits every width.
+   ====================================================================== */
 @media (max-width: 760px) {
   body { padding: 16px 12px; }
   .layout {
-    grid-template-columns: 1fr;
-    grid-template-areas: "header" "sidebar" "main" "footer";
+    grid-template-columns: 1fr;          /* single column */
+    grid-template-areas:
+      "header"
+      "menu"
+      "sidebar"
+      "main"
+      "footer";
   }
-  .header-art { flex-wrap: wrap; justify-content: center; text-align: center; padding: 0 16px; min-height: 150px; }
-  .header-pfp { height: 190px; margin-top: -60px; }
-  .header-words { flex-basis: 100%; text-align: center; padding: 0 0 14px; }
-  .site-title { font-size: 2.2em; }
   .post-date { margin-left: 0; }
-  .sidebar nav { display: flex; flex-wrap: wrap; gap: 14px; }
-  .nav-group { margin-bottom: 0; }
 }
 
 /* ======================================================================
@@ -792,13 +811,6 @@ main { display: flex; flex-direction: column; gap: 26px; }
   .menu-toggle { grid-area: menu; }
 }
 
-/* add a menu row to the mobile grid */
-@media (max-width: 760px) {
-  .layout {
-    grid-template-columns: 1fr;
-    grid-template-areas: "header" "menu" "sidebar" "main" "footer";
-  }
-}
 
 /* ======================================================================
    GALLERY GROUPS (date/outing headings in the gallery)
