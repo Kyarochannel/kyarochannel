@@ -6,6 +6,12 @@
     <title>{% if title %}{{ title }} — Kyaro ch.{% else %}Kyaro ch.{% endif %}</title>
     <meta name="description" content="{{ description or 'Kyaro\'s corner of the internet — writing, photos, and a quiet place by the water.' }}" />
 
+    <!-- Favicon (the little Kyaro icon in the browser tab) -->
+    <link rel="icon" href="/images/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png" />
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
+
     <!-- Set the theme BEFORE the page paints, so there's no light flash when
          navigating in dark mode. Runs immediately, before <body> renders. -->
     <script>
