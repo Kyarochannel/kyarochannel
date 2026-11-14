@@ -1,0 +1,14 @@
+{# A preview card for one post. Expects `post` (a collection item). #}
+<article class="post-card{% if compact %} compact{% endif %}">
+  <div class="post-byline">
+    <span class="post-cat {{ 'cat-article' if post.data.category == 'Articles' else 'cat-blog' }}">{{ post.data.category or 'Blog' }}</span>
+    <span class="post-date">{{ post.data.date | prettyDate }}</span>
+  </div>
+  {% if compact %}
+  <h3 class="post-title"><a href="{{ post.url }}">{{ post.data.title }}</a></h3>
+  {% else %}
+  <h2 class="post-title"><a href="{{ post.url }}">{{ post.data.title }}</a></h2>
+  {% endif %}
+  <p class="post-excerpt">{{ post.data.excerpt }}</p>
+  <a class="read-more" href="{{ post.url }}">read more &rarr;</a>
+</article>

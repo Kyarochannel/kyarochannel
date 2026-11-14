@@ -1,0 +1,873 @@
+/* ======================================================================
+   Kyaro ch. — stylesheet (v3)
+   Visual language: near-square corners, HARD offset shadows (no blur),
+   solid + double borders as structure. Colours are variables up top.
+   ====================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;1,400&family=Quicksand:wght@500;600;700&display=swap');
+
+/* ----------------------------------------------------------------------
+   COLOURS — from Kyaro's art
+   ---------------------------------------------------------------------- */
+:root,
+:root[data-theme="light"] {
+  --page-bg:      #d4e8cb;   /* green page */
+  --panel:        #fbfdf9;   /* near-white panels */
+  --panel-2:      #e9f3e1;   /* faint green (byline strips) */
+  --banner:       #cfe3ee;   /* watery banner behind Kyaro */
+  --banner-2:     #b6d2e3;
+  --ink:          #273524;
+  --ink-soft:     #5a6b53;
+  --forest:       #3f6c33;   /* headings */
+  --spring:       #83c15f;   /* accent green */
+  --gold:         #a37f1e;   /* links */
+  --gold-hover:   #74590f;
+  --violet:       #7362a0;
+  --teal:         #2f9087;
+  --line:         #5f8a4e;   /* the structural border colour (solid, visible) */
+  --line-soft:    #8fb57c;   /* double-border outline colour */
+  --shadow:       #4a7c3f;   /* HARD shadow colour (used offset, no blur) */
+}
+
+:root[data-theme="dark"] {
+  --page-bg:      #121a13;
+  --panel:        #1c271e;
+  --panel-2:      #243026;
+  --banner:       #1d303b;
+  --banner-2:     #152630;
+  --ink:          #e2ebdd;
+  --ink-soft:     #9bad93;
+  --forest:       #a6da8c;
+  --spring:       #70ab52;
+  --gold:         #d9b655;
+  --gold-hover:   #f0d488;
+  --violet:       #b1a1d2;
+  --teal:         #5cc1b7;
+  --line:         #4a6b3e;
+  --line-soft:    #3a5331;
+  --shadow:       #000000;
+}
+
+/* ----------------------------------------------------------------------
+   BASICS
+   ---------------------------------------------------------------------- */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  padding: 26px 20px;
+  color: var(--ink);
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  background-color: var(--page-bg);
+  /* gentle polka pattern — visible but calm, not busy */
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.45) 2.2px, transparent 2.6px),
+    radial-gradient(circle, rgba(95,138,78,0.12) 2.2px, transparent 2.6px);
+  background-size: 30px 30px, 30px 30px;
+  background-position: 0 0, 15px 15px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+a { color: var(--gold); text-underline-offset: 2px; }
+a:hover, a:focus { color: var(--gold-hover); }
+
+/* Reusable structural pieces ------------------------------------------- */
+/* a crisp bounded object: solid border + HARD offset shadow (no blur) */
+.block {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 5px;                       /* barely rounded, not pill-round */
+  box-shadow: 5px 5px 0 0 var(--shadow);    /* the signature hard shadow */
+}
+
+/* ----------------------------------------------------------------------
+   LAYOUT
+   ---------------------------------------------------------------------- */
+.layout {
+  max-width: 1060px;
+  margin: 0 auto;
+  display: grid;
+  gap: 26px;
+  grid-template-columns: 236px 1fr;
+  grid-template-areas:
+    "header  header"
+    "sidebar main"
+    "footer  footer";
+}
+.site-header { grid-area: header; }
+.sidebar     { grid-area: sidebar; }
+main         { grid-area: main; }
+.site-footer { grid-area: footer; }
+
+/* ----------------------------------------------------------------------
+   HEADER — Kyaro at real scale, BREAKING the banner's edges
+   ---------------------------------------------------------------------- */
+.site-header {
+  position: relative;
+  /* extra top room so Kyaro can rise above the banner without being clipped */
+  margin-top: 56px;
+  border: 2px solid var(--line);
+  border-radius: 5px;
+  box-shadow: 6px 6px 0 0 var(--shadow);
+  background: var(--panel);
+  overflow: visible;
+}
+
+.header-art {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  min-height: 180px;
+  padding: 0 32px;
+  background: linear-gradient(120deg, var(--banner) 0%, var(--banner-2) 100%);
+  border-radius: 3px 3px 0 0;
+  /* clip ONLY the banner's own background texture, not Kyaro (she's a sibling layer) */
+}
+
+.header-art::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 3px 3px 0 0;
+  /* faint vertical stripes in the banner, periwinkle-style texture */
+  background-image: repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0 2px, transparent 2px 24px);
+  pointer-events: none;
+}
+
+/* Kyaro lives in the header (not clipped) and is absolutely placed so her
+   hair rises ABOVE the banner's top edge and her shoulders meet its base. */
+.header-pfp {
+  position: absolute;
+  left: 28px;
+  bottom: 0;                  /* shoulders sit at the banner's bottom edge */
+  z-index: 3;
+  height: 300px;             /* BIG — she dominates the left and overflows up */
+  width: auto;
+  filter: drop-shadow(3px 3px 0 rgba(63,108,51,0.25));
+  pointer-events: none;
+}
+
+.header-words {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  /* leave room on the left for Kyaro */
+  padding: 0 0 28px 300px;
+}
+
+.site-title {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 3em;
+  font-weight: 700;
+  color: var(--forest);
+  margin: 0;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  /* clean, crisp type — just the faintest lift off the banner, no fake outline */
+  text-shadow: 0 1px 2px rgba(40, 60, 35, 0.18);
+}
+.site-title a { color: inherit; text-decoration: none; }
+.site-title a:hover { color: var(--forest); }
+.site-tagline {
+  margin: 8px 0 0;
+  color: var(--ink-soft);
+  font-style: italic;
+  font-size: 1.02em;
+}
+
+#theme-toggle {
+  position: absolute;
+  top: 14px; right: 16px;
+  z-index: 3;
+  width: 40px; height: 40px;
+  border: 2px solid var(--line);
+  border-radius: 5px;
+  background: var(--panel);
+  color: var(--gold);
+  font-size: 1.15em;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 0 var(--shadow);
+  transition: transform 0.12s ease;
+}
+#theme-toggle:hover { transform: translate(1px,1px); box-shadow: 2px 2px 0 0 var(--shadow); }
+
+/* Ticker ("today") */
+.ticker {
+  display: flex;
+  align-items: stretch;
+  border-top: 2px solid var(--line);
+  background: var(--panel);
+  border-radius: 0 0 3px 3px;
+  overflow: hidden;
+}
+.ticker-label {
+  flex-shrink: 0;
+  padding: 9px 18px;
+  background: var(--spring);
+  color: #233015;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 0.8em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: flex; align-items: center;
+  border-right: 2px solid var(--line);
+}
+.ticker-track { overflow: hidden; flex: 1; display: flex; align-items: center; }
+.ticker-text {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  color: var(--ink-soft);
+  font-size: 0.92em;
+  animation: ticker-scroll 30s linear infinite;
+}
+.ticker:hover .ticker-text { animation-play-state: paused; }
+@keyframes ticker-scroll { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .ticker-text { animation: none; padding-left: 18px; }
+}
+
+/* ----------------------------------------------------------------------
+   SIDEBAR
+   ---------------------------------------------------------------------- */
+.sidebar {
+  align-self: start;
+  padding: 22px 18px;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 5px;
+  box-shadow: 5px 5px 0 0 var(--shadow);
+}
+.nav-group { margin-bottom: 20px; }
+.nav-heading {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 0.78em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 9px;
+  padding-bottom: 6px;
+  /* double-border divider — periwinkle's signature */
+  border-bottom: 3px double var(--line-soft);
+}
+.sidebar nav ul { list-style: none; margin: 0; padding: 0; }
+.sidebar nav a {
+  display: block;
+  padding: 7px 12px;
+  margin-bottom: 4px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: background 0.15s ease, color 0.15s ease, padding-left 0.15s ease, border-color 0.15s ease;
+}
+.sidebar nav a:hover, .sidebar nav a:focus {
+  background: var(--panel-2);
+  color: var(--forest);
+  padding-left: 18px;
+  border-color: var(--line-soft);
+}
+.sidebar nav a.active {
+  background: var(--spring);
+  color: #233015;
+  font-weight: 700;
+  border-color: var(--line);
+  box-shadow: 2px 2px 0 0 var(--shadow);
+}
+.sidebar-card {
+  margin-top: 4px;
+  padding: 13px 15px;
+  background: var(--panel-2);
+  border: 2px solid var(--line-soft);
+  border-radius: 4px;
+}
+.small { font-size: 0.9em; color: var(--ink-soft); margin: 0; }
+
+/* ----------------------------------------------------------------------
+   MAIN — post preview cards as crisp bounded objects
+   ---------------------------------------------------------------------- */
+main { display: flex; flex-direction: column; gap: 26px; }
+
+.post-card {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 5px;
+  box-shadow: 5px 5px 0 0 var(--shadow);
+  padding: 0 24px 22px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.post-card:hover {
+  transform: translate(-2px,-2px);
+  box-shadow: 7px 7px 0 0 var(--shadow);
+}
+
+/* byline strip with a DOUBLE-border divider under it */
+.post-byline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 -24px 16px;
+  padding: 11px 24px;
+  background: var(--panel-2);
+  border-bottom: 4px double var(--line-soft);
+}
+.post-cat {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 0.72em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 3px 11px;
+  border: 2px solid var(--line);
+  border-radius: 4px;
+  color: #fff;
+}
+.cat-blog    { background: var(--teal); }
+.cat-article { background: var(--violet); }
+.post-date { color: var(--ink-soft); font-size: 0.85em; margin-left: auto; }
+
+.post-title {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1.55em;
+  font-weight: 700;
+  margin: 0 0 10px;
+  line-height: 1.2;
+}
+.post-title a { color: var(--forest); text-decoration: none; }
+.post-title a:hover { color: var(--gold-hover); text-decoration: underline; }
+
+.post-excerpt { margin: 0 0 16px; max-width: 64ch; }
+
+.read-more {
+  display: inline-block;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 0.9em;
+  text-decoration: none;
+  color: var(--forest);
+  padding: 6px 14px;
+  border: 2px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel-2);
+  box-shadow: 3px 3px 0 0 var(--shadow);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.read-more:hover {
+  color: var(--forest);
+  transform: translate(1px,1px);
+  box-shadow: 1px 1px 0 0 var(--shadow);
+}
+
+/* ----------------------------------------------------------------------
+   FOOTER
+   ---------------------------------------------------------------------- */
+.site-footer {
+  padding: 15px 26px;
+  text-align: center;
+  color: var(--ink-soft);
+  font-size: 0.85em;
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 5px;
+  box-shadow: 4px 4px 0 0 var(--shadow);
+}
+.site-footer p { margin: 0; }
+
+/* ----------------------------------------------------------------------
+   SKIP LINK
+   ---------------------------------------------------------------------- */
+#skip-link {
+  position: fixed; top: 10px; left: 10px;
+  padding: 8px 14px; background: var(--forest); color: #fff;
+  border: 2px solid var(--line); border-radius: 5px;
+  transform: translateY(-140%);
+  transition: transform 0.15s ease; z-index: 100; text-decoration: none;
+}
+#skip-link:focus { transform: translateY(0); }
+
+/* ----------------------------------------------------------------------
+   MOBILE
+   ---------------------------------------------------------------------- */
+@media (max-width: 760px) {
+  body { padding: 16px 12px; }
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-areas: "header" "sidebar" "main" "footer";
+  }
+  .header-art { flex-wrap: wrap; justify-content: center; text-align: center; padding: 0 16px; min-height: 150px; }
+  .header-pfp { height: 190px; margin-top: -60px; }
+  .header-words { flex-basis: 100%; text-align: center; padding: 0 0 14px; }
+  .site-title { font-size: 2.2em; }
+  .post-date { margin-left: 0; }
+  .sidebar nav { display: flex; flex-wrap: wrap; gap: 14px; }
+  .nav-group { margin-bottom: 0; }
+}
+
+/* ======================================================================
+   INNER POST PAGE — one full article, built for comfortable reading
+   ====================================================================== */
+
+.post-full {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 5px;
+  box-shadow: 5px 5px 0 0 var(--shadow);
+  padding: 24px 40px 36px;
+}
+
+.back-link {
+  display: inline-block;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 0.9em;
+  color: var(--teal);
+  text-decoration: none;
+  margin-bottom: 18px;
+}
+.back-link:hover { color: var(--forest); text-decoration: underline; }
+
+/* post header block with a strong double-border divider under it */
+.post-head {
+  margin: 0 -40px 28px;
+  padding: 0 40px 20px;
+  border-bottom: 4px double var(--line-soft);
+}
+.post-head-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+
+.post-full-title {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 2.4em;
+  font-weight: 700;
+  color: var(--forest);
+  line-height: 1.15;
+  margin: 0;
+}
+
+/* THE READING COLUMN — this is where comfort lives */
+.post-body {
+  max-width: 68ch;      /* comfortable measure, never runs too wide */
+  font-size: 1.06em;    /* a touch larger for long-form reading */
+  line-height: 1.8;     /* roomy */
+}
+
+.post-body .lede {
+  font-size: 1.2em;
+  color: var(--forest);
+  font-weight: 600;
+  line-height: 1.6;
+  margin: 0 0 1.1em;
+}
+
+.post-body p { margin: 0 0 1.25em; }
+
+.post-body h2 {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1.5em;
+  color: var(--forest);
+  margin: 1.8em 0 0.5em;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--line-soft);
+}
+.post-body h3 {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1.25em;
+  color: var(--forest);
+  margin: 1.5em 0 0.4em;
+}
+
+.post-body blockquote {
+  margin: 1.5em 0;
+  padding: 16px 22px;
+  background: var(--panel-2);
+  border: 2px solid var(--line-soft);
+  border-left: 5px solid var(--spring);
+  border-radius: 4px;
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 1.05em;
+}
+
+.post-body a { color: var(--gold); }
+.post-body a:hover { color: var(--gold-hover); }
+
+/* inline photos with captions */
+.post-figure {
+  margin: 1.8em 0;
+}
+.post-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 2px solid var(--line);
+  border-radius: 5px;
+  box-shadow: 4px 4px 0 0 var(--shadow);
+}
+.post-figure figcaption {
+  margin-top: 10px;
+  font-size: 0.88em;
+  color: var(--ink-soft);
+  font-style: italic;
+  text-align: center;
+}
+
+.post-body ul, .post-body ol { margin: 0 0 1.25em; padding-left: 1.5em; }
+.post-body li { margin-bottom: 0.4em; }
+
+/* post footer (back link / later prev-next) */
+.post-foot {
+  margin-top: 32px;
+  padding-top: 22px;
+  border-top: 4px double var(--line-soft);
+}
+
+@media (max-width: 760px) {
+  .post-full { padding: 20px 20px 28px; }
+  .post-head { margin: 0 -20px 24px; padding: 0 20px 18px; }
+  .post-full-title { font-size: 1.9em; }
+  .post-body { font-size: 1.02em; }
+}
+
+/* ======================================================================
+   SHARED INNER PAGE SHELL (Gallery / About / Links / Articles index)
+   ====================================================================== */
+.page-panel {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 5px;
+  box-shadow: 5px 5px 0 0 var(--shadow);
+  padding: 24px 32px 32px;
+}
+.page-head {
+  margin: 0 -32px 26px;
+  padding: 0 32px 18px;
+  border-bottom: 4px double var(--line-soft);
+}
+.page-title {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 2.1em;
+  font-weight: 700;
+  color: var(--forest);
+  margin: 0;
+}
+.page-intro { margin: 8px 0 0; color: var(--ink-soft); max-width: 60ch; }
+
+/* ======================================================================
+   GALLERY GRID
+   ====================================================================== */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.gallery-item { margin: 0; }
+.gallery-item a {
+  display: block;
+  border: 2px solid var(--line);
+  border-radius: 5px;
+  box-shadow: 4px 4px 0 0 var(--shadow);
+  overflow: hidden;
+  background: var(--panel-2);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.gallery-item a:hover {
+  transform: translate(-2px,-2px);
+  box-shadow: 6px 6px 0 0 var(--shadow);
+}
+.gallery-item img {
+  display: block;
+  width: 100%;
+  height: 220px;
+  object-fit: cover;      /* uniform tidy grid; varied shots cropped to fit */
+}
+.gallery-item figcaption {
+  margin-top: 8px;
+  font-size: 0.85em;
+  color: var(--ink-soft);
+  font-style: italic;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 760px) {
+  .page-panel { padding: 20px 20px 26px; }
+  .page-head { margin: 0 -20px 22px; padding: 0 20px 16px; }
+  .gallery-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .gallery-item img { height: 150px; }
+}
+
+/* ======================================================================
+   ABOUT / LINKS / ARTICLES-INDEX bits
+   ====================================================================== */
+
+/* About: portrait floated beside the text */
+.about-portrait {
+  float: right;
+  width: 160px;
+  height: auto;
+  margin: 0 0 14px 20px;
+  border: 2px solid var(--line);
+  border-radius: 5px;
+  box-shadow: 4px 4px 0 0 var(--shadow);
+  background: var(--banner);
+}
+
+/* Links: the "find me" list */
+.link-list { list-style: none; padding: 0; margin: 0 0 1.5em; }
+.link-list li {
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  background: var(--panel-2);
+  border: 2px solid var(--line-soft);
+  border-radius: 4px;
+}
+.link-list a { font-weight: 700; }
+.link-note { color: var(--ink-soft); font-size: 0.85em; margin-left: 8px; }
+
+/* 88x31 button shelf */
+.button-shelf {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0.5em 0 1.5em;
+}
+.btn88 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 31px;
+  font-size: 0.68em;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  color: #233015;
+  background: var(--spring);
+  border: 2px solid var(--line);
+  box-shadow: 2px 2px 0 0 var(--shadow);
+}
+.btn88.alt { background: var(--banner); color: var(--forest); }
+
+/* Articles index: small intro panel sits tighter above the cards */
+.index-intro { padding: 20px 28px; }
+.index-intro .page-title { margin-bottom: 4px; }
+.index-intro .page-intro { margin: 0; }
+
+@media (max-width: 760px) {
+  .about-portrait { float: none; display: block; margin: 0 auto 16px; }
+}
+
+/* ======================================================================
+   HOME PAGE
+   ====================================================================== */
+.home-welcome { }
+.home-lede {
+  font-size: 1.12em;
+  line-height: 1.6;
+  color: var(--ink);
+  margin: 0;
+  max-width: 62ch;
+}
+
+.home-section { margin-top: 26px; }
+
+.home-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 4px double var(--line-soft);
+}
+.home-section-title {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1.4em;
+  font-weight: 700;
+  color: var(--forest);
+  margin: 0;
+}
+.home-section-link {
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 600;
+  font-size: 0.88em;
+  color: var(--teal);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.home-section-link:hover { color: var(--forest); text-decoration: underline; }
+
+/* compact cards on the home page sit a little tighter */
+.post-card.compact { margin-bottom: 16px; padding-bottom: 18px; }
+.post-card.compact:last-child { margin-bottom: 0; }
+.post-card.compact .post-title { font-size: 1.3em; }
+
+/* recent photos row */
+.home-photo-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+.home-photo-row a {
+  display: block;
+  border: 2px solid var(--line);
+  border-radius: 5px;
+  box-shadow: 3px 3px 0 0 var(--shadow);
+  overflow: hidden;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.home-photo-row a:hover {
+  transform: translate(-2px,-2px);
+  box-shadow: 5px 5px 0 0 var(--shadow);
+}
+.home-photo-row img {
+  display: block;
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+}
+
+@media (max-width: 760px) {
+  .home-photo-row { grid-template-columns: 1fr 1fr; }
+  .home-section-head { flex-wrap: wrap; }
+}
+
+/* ======================================================================
+   MOBILE: retractable sidebar
+   Desktop is untouched — the menu button is hidden and the sidebar
+   is always shown. On mobile the sidebar collapses behind a Menu button.
+   ====================================================================== */
+
+/* the Menu button: hidden on desktop */
+.menu-toggle { display: none; }
+
+@media (max-width: 760px) {
+  /* show the menu button, styled like our other hard-shadow buttons */
+  .menu-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin: 0 0 20px;
+    padding: 12px 16px;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 1em;
+    color: #233015;
+    background: var(--spring);
+    border: 2px solid var(--line);
+    border-radius: 5px;
+    box-shadow: 4px 4px 0 0 var(--shadow);
+    cursor: pointer;
+  }
+  .menu-toggle:hover { transform: translate(1px,1px); box-shadow: 2px 2px 0 0 var(--shadow); }
+  .menu-toggle .menu-icon { font-size: 1.1em; line-height: 1; }
+
+  /* collapse the sidebar by default on mobile */
+  .sidebar {
+    display: none;
+    margin-bottom: 20px;
+  }
+  /* when opened via the button, show it */
+  .sidebar.open { display: block; }
+
+  /* the menu button lives in the layout where the sidebar was,
+     so content sits right under it when collapsed */
+  .menu-toggle { grid-area: menu; }
+}
+
+/* add a menu row to the mobile grid */
+@media (max-width: 760px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-areas: "header" "menu" "sidebar" "main" "footer";
+  }
+}
+
+/* ======================================================================
+   GALLERY GROUPS (date/outing headings in the gallery)
+   ====================================================================== */
+.gallery-group { margin-bottom: 30px; }
+.gallery-group:last-child { margin-bottom: 0; }
+.gallery-group-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 4px double var(--line-soft);
+}
+.gallery-group-title {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1.3em;
+  font-weight: 700;
+  color: var(--forest);
+  margin: 0;
+}
+.gallery-group-date {
+  color: var(--ink-soft);
+  font-size: 0.88em;
+  font-style: italic;
+}
+
+/* ======================================================================
+   IN-POST PHOTOS (from Markdown ![caption](file) → styled figure)
+   ====================================================================== */
+.post-body figure {
+  margin: 1.8em 0;
+}
+.post-body figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 2px solid var(--line);
+  border-radius: 5px;
+  box-shadow: 4px 4px 0 0 var(--shadow);
+}
+.post-body figure figcaption {
+  margin-top: 10px;
+  font-size: 0.88em;
+  color: var(--ink-soft);
+  font-style: italic;
+  text-align: center;
+}
+
+/* ======================================================================
+   EMPTY STATES (shown when a section has no content yet)
+   ====================================================================== */
+.empty-state p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 1.05em;
+  text-align: center;
+  padding: 10px 0;
+}
+.empty-state-inline {
+  color: var(--ink-soft);
+  font-size: 1.05em;
+  text-align: center;
+  padding: 24px 0 8px;
+  margin: 0;
+}
+.home-whats-coming {
+  background: var(--panel);
+  border: 2px solid var(--line);
+  border-radius: 5px;
+  box-shadow: 5px 5px 0 0 var(--shadow);
+  padding: 22px 28px;
+}
+.home-whats-coming ul { margin: 0 0 1em; padding-left: 1.4em; }
+.home-whats-coming li { margin-bottom: 0.4em; }
+
+/* "coming soon" link labels — look intentional, not broken */
+.link-soon {
+  font-weight: 700;
+  color: var(--ink-soft);
+  opacity: 0.75;
+}

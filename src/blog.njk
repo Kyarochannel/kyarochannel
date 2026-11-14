@@ -1,0 +1,21 @@
+---
+layout: layouts/base.njk
+nav: blog
+permalink: /blog/
+sidebarNote: "Everyday notes. Longer reads are under <a href=\"/articles/\">Articles</a>."
+---
+<section class="page-panel index-intro">
+  <h1 class="page-title">Blog</h1>
+  <p class="page-intro">Short, personal notes about everyday life.</p>
+</section>
+
+{% if collections.blog.length %}
+  {% for post in collections.blog %}
+    {% set compact = false %}
+    {% include "partials/postcard.njk" %}
+  {% endfor %}
+{% else %}
+  <section class="page-panel empty-state">
+    <p>No posts yet — the first one's on its way. Check back soon. &#127810;</p>
+  </section>
+{% endif %}

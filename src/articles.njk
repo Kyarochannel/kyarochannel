@@ -1,0 +1,21 @@
+---
+layout: layouts/base.njk
+nav: articles
+permalink: /articles/
+sidebarNote: "Longer reads live here. Shorter notes are on the <a href=\"/blog/\">Blog</a>."
+---
+<section class="page-panel index-intro">
+  <h1 class="page-title">Articles</h1>
+  <p class="page-intro">Longer, more considered pieces — the ones I take my time with.</p>
+</section>
+
+{% if collections.articles.length %}
+  {% for post in collections.articles %}
+    {% set compact = false %}
+    {% include "partials/postcard.njk" %}
+  {% endfor %}
+{% else %}
+  <section class="page-panel empty-state">
+    <p>No articles yet — these take a little longer to write. Soon. &#128220;</p>
+  </section>
+{% endif %}

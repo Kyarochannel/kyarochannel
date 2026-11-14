@@ -1,0 +1,36 @@
+---
+layout: layouts/base.njk
+nav: gallery
+permalink: /gallery/
+title: Gallery
+sidebarNote: "Shot on a Fuji X-T3. Click any photo to see it bigger."
+---
+<section class="page-panel">
+  <header class="page-head">
+    <h1 class="page-title">Gallery</h1>
+    <p class="page-intro">A slowly growing collection of moments worth keeping. Click any photo to open it.</p>
+  </header>
+
+  {% if photos.groups.length %}
+    {% for group in photos.groups %}
+    <div class="gallery-group">
+      {% if group.title %}
+      <div class="gallery-group-head">
+        <h2 class="gallery-group-title">{{ group.title }}</h2>
+        {% if group.date %}<span class="gallery-group-date">{{ group.date }}</span>{% endif %}
+      </div>
+      {% endif %}
+      <div class="gallery-grid">
+        {% for photo in group.photos %}
+        <figure class="gallery-item">
+          <a href="/images/gallery/{{ photo.file }}"><img src="/images/gallery/{{ photo.file }}" alt="{{ photo.caption }}" loading="lazy" /></a>
+          {% if photo.caption %}<figcaption>{{ photo.caption }}</figcaption>{% endif %}
+        </figure>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <p class="empty-state-inline">No photos yet — the first roll is coming soon. &#128247;</p>
+  {% endif %}
+</section>

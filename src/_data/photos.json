@@ -1,0 +1,4 @@
+{
+  "comment": "Your photo list. To add a photo: put the image file in src/images/gallery/, then add a group here (newest at the top). See ADDING-PHOTOS.md. Empty for now — your first photos will go here.",
+  "groups": []
+}

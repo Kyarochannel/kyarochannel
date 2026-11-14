@@ -1,0 +1,74 @@
+---
+layout: layouts/base.njk
+nav: home
+permalink: /
+---
+<section class="page-panel home-welcome">
+  <h1 class="page-title">Welcome in &#127810;</h1>
+  <p class="home-lede">
+    This is my corner of the internet — a quiet place for writing, photos, and
+    whatever else won't fit in a feed. It's brand new and still filling up, so
+    pull up a chair, have a look around, and come back as it grows.
+  </p>
+</section>
+
+{% if collections.blog.length %}
+<section class="home-section">
+  <div class="home-section-head">
+    <h2 class="home-section-title">Latest from the blog</h2>
+    <a class="home-section-link" href="/blog/">all posts &rarr;</a>
+  </div>
+  {% for post in collections.blog %}
+    {% if loop.index <= 2 %}
+      {% set compact = true %}
+      {% include "partials/postcard.njk" %}
+    {% endif %}
+  {% endfor %}
+</section>
+{% endif %}
+
+{% if collections.articles.length %}
+<section class="home-section">
+  <div class="home-section-head">
+    <h2 class="home-section-title">Latest articles</h2>
+    <a class="home-section-link" href="/articles/">all articles &rarr;</a>
+  </div>
+  {% for post in collections.articles %}
+    {% if loop.index <= 2 %}
+      {% set compact = true %}
+      {% include "partials/postcard.njk" %}
+    {% endif %}
+  {% endfor %}
+</section>
+{% endif %}
+
+{% if photos.groups.length %}
+<section class="home-section">
+  <div class="home-section-head">
+    <h2 class="home-section-title">Recent photos</h2>
+    <a class="home-section-link" href="/gallery/">the gallery &rarr;</a>
+  </div>
+  <div class="home-photo-row">
+    {% set recent = photos.groups[0].photos %}
+    {% for photo in recent %}
+      {% if loop.index <= 4 %}
+      <a href="/gallery/"><img src="/images/gallery/{{ photo.file }}" alt="{{ photo.caption }}" loading="lazy" /></a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if not collections.blog.length and not collections.articles.length and not photos.groups.length %}
+<section class="home-section">
+  <div class="home-whats-coming">
+    <h2 class="home-section-title">What's coming</h2>
+    <ul>
+      <li><strong>Blog</strong> — short, personal notes about everyday life.</li>
+      <li><strong>Articles</strong> — longer, more considered pieces.</li>
+      <li><strong>Gallery</strong> — photos from wherever I wander with a camera.</li>
+    </ul>
+    <p class="small">The first posts and photos are on their way. &#127807;</p>
+  </div>
+</section>
+{% endif %}

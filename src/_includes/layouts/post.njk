@@ -1,0 +1,22 @@
+---
+layout: layouts/base.njk
+---
+<article class="post-full">
+  <a class="back-link" href="{{ backLink or '/blog/' }}">&larr; back to the {{ backLabel or 'blog' }}</a>
+
+  <header class="post-head">
+    <div class="post-head-meta">
+      <span class="post-cat {{ 'cat-article' if category == 'Articles' else 'cat-blog' }}">{{ category or 'Blog' }}</span>
+      <span class="post-date">{{ date | prettyDate }}</span>
+    </div>
+    <h1 class="post-full-title">{{ title }}</h1>
+  </header>
+
+  <div class="post-body">
+    {{ content | safe }}
+  </div>
+
+  <footer class="post-foot">
+    <a class="read-more" href="{{ backLink or '/blog/' }}">&larr; back to the {{ backLabel or 'blog' }}</a>
+  </footer>
+</article>
