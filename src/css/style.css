@@ -106,6 +106,12 @@ a:hover, a:focus { color: var(--gold-hover); }
 main         { grid-area: main; }
 .site-footer { grid-area: footer; }
 
+/* Grid children default to min-width:auto, which lets wide content (the
+   header art, long lines) push a column wider than the screen. Allowing
+   them to shrink to 0 is what makes the whole layout actually fit mobile. */
+.site-header, .sidebar, main, .site-footer { min-width: 0; }
+.layout > * { min-width: 0; max-width: 100%; }
+
 /* ----------------------------------------------------------------------
    HEADER — Kyaro at real scale, BREAKING the banner's edges
    ---------------------------------------------------------------------- */
