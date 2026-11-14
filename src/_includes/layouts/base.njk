@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% if title %}{{ title }} — Kyaro ch.{% else %}Kyaro ch.{% endif %}</title>
     <meta name="description" content="{{ description or 'Kyaro\'s corner of the internet — writing, photos, and a quiet place by the water.' }}" />
+
+    <!-- Set the theme BEFORE the page paints, so there's no light flash when
+         navigating in dark mode. Runs immediately, before <body> renders. -->
+    <script>
+      (function(){var r=document.documentElement,s=null;
+      try{s=localStorage.getItem("theme");}catch(e){}
+      if(s==="dark"||s==="light")r.setAttribute("data-theme",s);
+      else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)r.setAttribute("data-theme","dark");
+      else r.setAttribute("data-theme","light");})();
+    </script>
+
     <link href="/css/style.css" rel="stylesheet" />
   </head>
   <body>
@@ -61,12 +72,10 @@
     </div>
 
     <script>
-      (function(){var r=document.documentElement,b=document.getElementById("theme-toggle"),s=null;
-      try{s=localStorage.getItem("theme");}catch(e){}
-      if(s==="dark"||s==="light")r.setAttribute("data-theme",s);
-      else if(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches)r.setAttribute("data-theme","dark");
-      else r.setAttribute("data-theme","light");
-      b.addEventListener("click",function(){var n=r.getAttribute("data-theme")==="dark"?"light":"dark";r.setAttribute("data-theme",n);try{localStorage.setItem("theme",n);}catch(e){}});
+      // The theme is already set in <head>. This just wires up the buttons,
+      // which have to exist first — so it stays at the end of the page.
+      (function(){var r=document.documentElement,b=document.getElementById("theme-toggle");
+      if(b){b.addEventListener("click",function(){var n=r.getAttribute("data-theme")==="dark"?"light":"dark";r.setAttribute("data-theme",n);try{localStorage.setItem("theme",n);}catch(e){}});}
       var mt=document.getElementById("menu-toggle"),sb=document.getElementById("site-nav");
       if(mt&&sb){mt.addEventListener("click",function(){var o=sb.classList.toggle("open");mt.setAttribute("aria-expanded",o?"true":"false");});}
       })();
